@@ -1,0 +1,65 @@
+class ChargingStation:
+    def __init__(self, station_id, name, location, slots):
+        self.station_id = station_id
+        self.name = name
+        self.location = location
+        self.slots = slots
+
+    def book_slot(self):
+        if self.slots > 0:
+            self.slots -= 1
+            return f"Slot booked at {self.name}!"
+        else:
+            return f"No slots available at {self.name}."
+
+class EVChargingSystem:
+    def __init__(self):
+        self.stations = []
+
+    def add_station(self, station):
+        self.stations.append(station)
+
+    def find_stations(self, location=None):
+        available_stations = []
+        for station in self.stations:
+            if location is None or station.location.lower() == location.lower():
+                available_stations.append(station)
+        return available_stations
+
+    def book_slot_at_station(self, station_id):
+        for station in self.stations:
+            if station.station_id == station_id:
+                return station.book_slot()
+        return "Station not found."
+
+# Creating the EV Charging System
+ev_system = EVChargingSystem()
+
+# Adding some stations to the system
+ev_system.add_station(ChargingStation(1, "Station A", "Downtown", 5))
+ev_system.add_station(ChargingStation(2, "Station B", "Uptown", 3))
+ev_system.add_station(ChargingStation(3, "Station C", "Suburb", 0))
+
+# Greeting the user
+user_name = input("Welcome! Please enter your name: ")
+print(f"Hello, {user_name}!")
+
+# Getting the user's current city
+print("Available locations: Downtown, Uptown, Suburb")
+current_city = input("Enter your current city to find charging stations: ")
+
+stations = ev_system.find_stations(current_city)
+
+if stations:
+    print(f"Charging stations available in {current_city}:")
+    for station in stations:
+        print(f"ID: {station.station_id}, Name: {station.name}, Available Slots: {station.slots}")
+    
+    station_id = int(input("Enter station ID to book a slot: "))
+    booking_result = ev_system.book_slot_at_station(station_id)
+    print(f"{user_name}, {booking_result}")
+else:
+    print(f"Sorry, {user_name}. No charging stations found in {current_city}.")
+
+# Exit message
+print("Thank you for using our service. Visit again!")
